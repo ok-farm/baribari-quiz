@@ -2,7 +2,7 @@
 const WORDS = ["バリバリ", "パリパリ", "ハリハリ"];
 const CORRECT_WORD = "バリバリ";
 const WIN_SCORE = 3;
-const GAME_TIME = 10;
+const GAME_TIME = 20;
 
 // DOM要素
 const elements = {
