@@ -99,6 +99,8 @@ function checkWord(wordElement, word) {
     }
   } else {
     // 不正解の場合
+    gameState.score = Math.max(0, gameState.score - 1); // スコアを減点（0より下にはならない）
+    updateScoreMessage(gameState.score); // スコア表示を更新
     wordElement.classList.add("incorrect");
     setTimeout(() => {
       wordElement.remove();
