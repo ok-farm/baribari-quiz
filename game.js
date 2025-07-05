@@ -223,6 +223,14 @@ window.addEventListener("DOMContentLoaded", () => {
   resetGame();
   
   // 初期表示の設定
+  elements.coverImage = document.getElementById("cover-image");
+  elements.startScreen = document.getElementById("start-screen");
+  elements.gameScreen = document.getElementById("game-screen");
+  elements.clearScreen = document.getElementById("clear-screen");
+  elements.gobouImg = document.getElementById("gobou-img");
+  elements.eruptionArea = document.getElementById("eruption-area");
+  
+  // 初期表示を設定
   elements.gobouImg.style.display = "none";
   elements.eruptionArea.style.display = "none";
   elements.coverImage.style.display = "flex";
@@ -230,13 +238,26 @@ window.addEventListener("DOMContentLoaded", () => {
   elements.gameScreen.style.display = "none";
   elements.clearScreen.style.display = "none";
   
-  // スタートボタンイベント（DOM読み込み後に設定）
+  // スタートボタンイベント
   const startBtn = document.getElementById("start-btn");
   if (startBtn) {
     startBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       startGame();
+    });
+  }
+  
+  // リスタートボタンイベント
+  const restartBtn = document.getElementById("restart-btn");
+  if (restartBtn) {
+    restartBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      resetGame();
+      elements.clearScreen.style.display = "none";
+      elements.coverImage.style.display = "flex";
+      elements.startScreen.style.display = "flex";
     });
   }
 });
