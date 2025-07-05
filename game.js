@@ -74,7 +74,9 @@ function createEruptionWord() {
     elements.scoreSpan.textContent = gameState.score;
     wordDiv.remove();
     
-    if (gameState.score >= WIN_SCORE) {
+    // クリア判定（ゲームがアクティブなときのみ）
+    if (gameState.gameActive && gameState.score >= WIN_SCORE) {
+      gameState.gameActive = false;
       endGame(true);
     }
   });
@@ -122,26 +124,23 @@ function startEruption() {
 
 // ゲーム開始
 function startGame() {
-  // 状態リセット
-  gameState = {
-    score: 0,
-    timeLeft: GAME_TIME,
-    gameActive: true,
-    gameInterval: null,
-    eruptionInterval: null
-  };
+  // ゲーム状態をリセット
+  gameState.score = 0;
+  gameState.timeLeft = GAME_TIME;
+  gameState.gameActive = true;
+  elements.scoreSpan.textContent = gameState.score;
+  elements.timerSpan.textContent = gameState.timeLeft;
+  elements.eruptionArea.innerHTML = '';
   
-  // UIリセット
-  elements.scoreSpan.textContent = "0";
-  elements.timerSpan.textContent = GAME_TIME;
-  elements.messageDiv.textContent = "";
-  elements.eruptionArea.innerHTML = "";
+  // スタート画面を非表示に
+  elements.startScreen.style.display = 'none';
+  elements.clearScreen.style.display = 'none';
   
   // ゲーム画面表示
   elements.gobouImg.style.display = "block";
   elements.eruptionArea.style.display = "block";
   elements.coverImage.style.display = "none";
-  elements.startScreen.style.display = "none";
+  elements.gameScreen.style.display = "block";
   
   // ゲーム開始
   startTimer();
@@ -214,5 +213,4 @@ window.addEventListener("DOMContentLoaded", () => {
     startGame();
   });
 });
-
 
