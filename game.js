@@ -153,6 +153,9 @@ function startGame() {
   gameState.score = 0;
   gameState.timeLeft = GAME_TIME;
   
+  // スクロールを無効化
+  document.body.classList.add('game-active');
+  
   // スコアメッセージを初期化
   const scoreElement = document.querySelector('.score');
   if (scoreElement) {
@@ -198,31 +201,44 @@ function endGame(win) {
   clearInterval(gameState.eruptionInterval);
   clearInterval(gameState.gameInterval);
   
+  // スクロールを有効化
+  document.body.classList.remove('game-active');
+  
   // 結果メッセージ
   showMessage(win ? "クリア！バリバリ達人！" : "時間切れ！また挑戦してね");
   
   // 2秒後にクリア画面またはゲームオーバー画面を表示
   setTimeout(() => {
-    elements.messageDiv.style.display = 'none';
+    if (elements.messageDiv) elements.messageDiv.style.display = 'none';
     if (win) {
       showClearScreen();
     } else {
-      elements.coverImage.style.display = 'block';
-      elements.startScreen.style.display = 'flex';
-      elements.gameScreen.style.display = 'none';
+      if (elements.coverImage) elements.coverImage.style.display = 'block';
+      if (elements.startScreen) elements.startScreen.style.display = 'flex';
+      if (elements.gameScreen) elements.gameScreen.style.display = 'none';
       resetGame();
     }
   }, 2000);
 }
 
 function showClearScreen() {
-  elements.gameScreen.style.display = 'none';
-  elements.clearScreen.style.display = 'flex';
+  // ゲーム画面を非表示
+  if (elements.gameScreen) elements.gameScreen.style.display = 'none';
+  
+  // クリア画面を表示
+  const clearScreen = document.getElementById('clear-screen');
+  if (clearScreen) {
+    clearScreen.style.display = 'flex';
+    // 画面の一番上にスクロール
+    clearScreen.scrollTo(0, 0);
+  }
   
   // 既存のイベントリスナーを削除してから追加（重複防止）
-  const newRestartBtn = elements.restartBtn.cloneNode(true);
-  elements.restartBtn.parentNode.replaceChild(newRestartBtn, elements.restartBtn);
-  elements.restartBtn = newRestartBtn;
+  if (elements.restartBtn) {
+    const newRestartBtn = elements.restartBtn.cloneNode(true);
+    elements.restartBtn.parentNode.replaceChild(newRestartBtn, elements.restartBtn);
+    elements.restartBtn = newRestartBtn;
+  }
   
   // 再開ボタンのイベントリスナーを設定
   elements.restartBtn.addEventListener('click', () => {
