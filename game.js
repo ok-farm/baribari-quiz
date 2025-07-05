@@ -4,6 +4,17 @@ const CORRECT_WORD = "バリバリ";
 const WIN_SCORE = 3;
 const GAME_TIME = 20;
 
+// スコアメッセージの更新
+function updateScoreMessage(score) {
+  const remaining = WIN_SCORE - score;
+  const remainingSpan = document.getElementById('remaining');
+  if (remaining > 0) {
+    remainingSpan.textContent = `${remaining}集めろ⚡️`;
+  } else {
+    remainingSpan.textContent = 'やったね⚡️';
+  }
+}
+
 // DOM要素
 const elements = {
   eruptionArea: document.getElementById("eruption-area"),
@@ -63,28 +74,35 @@ function createEruptionWord() {
   wordDiv.addEventListener("click", () => {
     if (!gameState.gameActive) return;
     
-    if (word === CORRECT_WORD) {
-      gameState.score++;
-      showMessage("正解！バリバリ！");
-    } else {
-      gameState.score = Math.max(0, gameState.score - 1);
-      showMessage("違うよ！スコア-1");
-    }
+    checkWord(wordDiv, word);
     
     elements.scoreSpan.textContent = gameState.score;
-    wordDiv.remove();
-    
-    // クリア判定（ゲームがアクティブなときのみ）
-    if (gameState.gameActive && gameState.score >= WIN_SCORE) {
-      gameState.gameActive = false;
-      endGame(true);
-    }
   });
   
   // アニメーション終了時に要素を削除
   wordDiv.addEventListener("animationend", () => wordDiv.remove());
   
   elements.eruptionArea.appendChild(wordDiv);
+}
+
+function checkWord(wordElement, word) {
+  if (word === CORRECT_WORD) {
+    // 正解の場合
+    gameState.score++;
+    updateScoreMessage(gameState.score);
+    wordElement.remove();
+    
+    // クリア判定
+    if (gameState.score >= WIN_SCORE) {
+      endGame(true);
+    }
+  } else {
+    // 不正解の場合
+    wordElement.classList.add("incorrect");
+    setTimeout(() => {
+      wordElement.remove();
+    }, 500);
+  }
 }
 
 // メッセージ表示
@@ -129,6 +147,9 @@ function startGame() {
   
   // ゲーム状態をアクティブに
   gameState.gameActive = true;
+  
+  // スコアメッセージを初期化
+  updateScoreMessage(0);
   
   // UIを更新
   elements.scoreSpan.textContent = gameState.score;
