@@ -6,6 +6,7 @@ body {
   min-height: 100vh;
   width: 100%;
   touch-action: manipulation;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -266,9 +267,12 @@ body.game-active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 200;
+  z-index: 300;
   padding: 20px;
   box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  pointer-events: auto;
 }
 
 /* ゲームルールのスタイル */
@@ -293,7 +297,8 @@ body.game-active {
 
 /* スタート画面のバリバリごぼう画像 */
 .start-screen-gobou-img {
-  max-width: 50%;
+  max-width: 300px;
+  width: 80%;
   height: auto;
   display: block;
   margin: 20px auto;
@@ -306,23 +311,58 @@ body.game-active {
 @media (max-width: 768px) {
   .game-rules {
     padding: 15px;
-    margin: 20px 0;
+    margin: 15px 0;
+    width: 95%;
   }
   
   .game-rules p {
-    font-size: 1em;
-    margin: 10px 0;
+    font-size: 0.95em;
+    margin: 12px 0;
+    line-height: 1.5;
   }
 
   .start-screen-gobou-img {
-    max-width: 60%;
+    max-width: 250px;
+    width: 85%;
     margin: 15px auto;
   }
 
-  .game-rules {
-    margin-top: 15px;
+  #start-btn {
+    margin-top: 10px;
+    padding: 12px 25px;
+    font-size: 1.2em;
+  }
+
+  #start-screen.screen {
+    padding: 15px;
+    justify-content: flex-start;
+    padding-top: 30px;
   }
 }
+/* PC向けスタイル */
+@media (min-width: 769px) {
+  .start-screen-gobou-img {
+    max-width: 400px;
+    margin: 30px auto;
+  }
+
+  .game-rules {
+    margin: 30px 0;
+    padding: 25px;
+  }
+
+  .game-rules p {
+    font-size: 1.1em;
+    margin: 15px 0;
+  }
+
+  #start-btn {
+    margin-top: 20px;
+    font-size: 1.6em;
+    padding: 12px 40px;
+  }
+}
+
 #start-btn {
   font-size: 1.5em;
   padding: 0.6em 2em;
@@ -334,7 +374,7 @@ body.game-active {
   box-shadow: 0 2px 8px #e7c87a66;
   cursor: pointer;
   margin-top: 1em;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
 #start-btn:hover, #restart-btn:hover {
   background: #ffe7a7;
