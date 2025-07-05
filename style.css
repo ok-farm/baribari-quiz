@@ -3,11 +3,11 @@ body {
   font-family: 'Segoe UI', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
   touch-action: manipulation;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 /* ゲーム中のみスクロールを無効化 */
@@ -266,23 +266,31 @@ body.game-active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   z-index: 300;
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: auto;
   pointer-events: auto;
+}
+
+#start-screen.screen h1 {
+  color: #7c5c2b;
+  font-size: 2.2em;
+  text-align: center;
+  margin: 0 0 15px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* ゲームルールのスタイル */
 .game-rules {
-  margin: 25px 0;
-  padding: 20px;
+  margin: 10px 0;
+  padding: 15px;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+  max-width: 400px;
   width: 90%;
   text-align: left;
 }
@@ -297,11 +305,11 @@ body.game-active {
 
 /* スタート画面のバリバリごぼう画像 */
 .start-screen-gobou-img {
-  max-width: 300px;
-  width: 80%;
+  max-width: 250px;
+  width: 70%;
   height: auto;
   display: block;
-  margin: 20px auto;
+  margin: 0 auto;
   opacity: 0.8;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -364,16 +372,16 @@ body.game-active {
 }
 
 #start-btn {
-  font-size: 1.5em;
-  padding: 0.6em 2em;
+  font-size: 1.4em;
+  padding: 12px 40px;
   background: #f7d27a;
   border: none;
-  border-radius: 12px;
+  border-radius: 30px;
   color: #7c5c2b;
   font-weight: bold;
-  box-shadow: 0 2px 8px #e7c87a66;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  margin-top: 1em;
+  margin: 10px 0;
   transition: all 0.2s ease;
 }
 #start-btn:hover, #restart-btn:hover {
