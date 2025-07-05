@@ -240,24 +240,28 @@ function resetGame() {
 
 // 初期表示
 window.addEventListener("DOMContentLoaded", () => {
-  // ゲーム状態の初期化
-  resetGame();
-  
-  // 初期表示の設定
-  elements.coverImage = document.getElementById("cover-image");
+  // 要素の参照を確実に取得
+  elements.eruptionArea = document.getElementById("eruption-area");
+  elements.gobouImg = document.getElementById("gobou-img");
+  elements.scoreSpan = document.getElementById("score");
+  elements.timerSpan = document.getElementById("timer");
+  elements.messageDiv = document.getElementById("message");
   elements.startScreen = document.getElementById("start-screen");
   elements.gameScreen = document.getElementById("game-screen");
   elements.clearScreen = document.getElementById("clear-screen");
-  elements.gobouImg = document.getElementById("gobou-img");
-  elements.eruptionArea = document.getElementById("eruption-area");
+  elements.coverImage = document.getElementById("cover-image");
+  elements.restartBtn = document.getElementById("restart-btn");
+  
+  // ゲーム状態の初期化
+  resetGame();
   
   // 初期表示を設定
-  elements.gobouImg.style.display = "none";
-  elements.eruptionArea.style.display = "none";
-  elements.coverImage.style.display = "flex";
-  elements.startScreen.style.display = "flex";
-  elements.gameScreen.style.display = "none";
-  elements.clearScreen.style.display = "none";
+  if (elements.gobouImg) elements.gobouImg.style.display = "none";
+  if (elements.eruptionArea) elements.eruptionArea.style.display = "none";
+  if (elements.coverImage) elements.coverImage.style.display = "flex";
+  if (elements.startScreen) elements.startScreen.style.display = "flex";
+  if (elements.gameScreen) elements.gameScreen.style.display = "none";
+  if (elements.clearScreen) elements.clearScreen.style.display = "none";
   
   // スタートボタンイベント
   const startBtn = document.getElementById("start-btn");
@@ -276,9 +280,9 @@ window.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       e.stopPropagation();
       resetGame();
-      elements.clearScreen.style.display = "none";
-      elements.coverImage.style.display = "flex";
-      elements.startScreen.style.display = "flex";
+      if (elements.clearScreen) elements.clearScreen.style.display = "none";
+      if (elements.coverImage) elements.coverImage.style.display = "flex";
+      if (elements.startScreen) elements.startScreen.style.display = "flex";
     });
   }
 });
