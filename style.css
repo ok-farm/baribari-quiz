@@ -291,6 +291,17 @@ body.game-active {
   line-height: 1.6;
 }
 
+/* スタート画面のバリバリごぼう画像 */
+.start-screen-gobou-img {
+  max-width: 50%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  opacity: 0.8;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
 /* モバイル対応 */
 @media (max-width: 768px) {
   .game-rules {
@@ -301,6 +312,15 @@ body.game-active {
   .game-rules p {
     font-size: 1em;
     margin: 10px 0;
+  }
+
+  .start-screen-gobou-img {
+    max-width: 60%;
+    margin: 15px auto;
+  }
+
+  .game-rules {
+    margin-top: 15px;
   }
 }
 #start-btn {
