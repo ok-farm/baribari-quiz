@@ -12,7 +12,10 @@ const elements = {
   timerSpan: document.getElementById("timer"),
   messageDiv: document.getElementById("message"),
   startScreen: document.getElementById("start-screen"),
-  coverImage: document.getElementById("cover-image")
+  gameScreen: document.getElementById("game-screen"),
+  clearScreen: document.getElementById("clear-screen"),
+  coverImage: document.getElementById("cover-image"),
+  restartBtn: document.getElementById("restart-btn")
 };
 
 // ゲーム状態
@@ -147,21 +150,54 @@ function startGame() {
 
 // ゲーム終了
 function endGame(win) {
-  gameState.gameActive = false;
-  clearInterval(gameState.gameInterval);
   clearInterval(gameState.eruptionInterval);
+  clearInterval(gameState.gameInterval);
   
   // 結果メッセージ
   showMessage(win ? "クリア！バリバリ達人！" : "時間切れ！また挑戦してね");
   
-  // 2秒後にスタート画面に戻る
+  // 2秒後にクリア画面またはゲームオーバー画面を表示
   setTimeout(() => {
-    elements.eruptionArea.innerHTML = "";
-    elements.gobouImg.style.display = "none";
-    elements.eruptionArea.style.display = "none";
-    elements.coverImage.style.display = "flex";
-    elements.startScreen.style.display = "flex";
-  }, 1200);
+    elements.messageDiv.style.display = 'none';
+    if (win) {
+      showClearScreen();
+    } else {
+      elements.coverImage.style.display = 'block';
+      elements.startScreen.style.display = 'flex';
+      elements.gameScreen.style.display = 'none';
+      resetGame();
+    }
+  }, 2000);
+}
+
+function showClearScreen() {
+  elements.gameScreen.style.display = 'none';
+  elements.clearScreen.style.display = 'flex';
+  
+  // 既存のイベントリスナーを削除してから追加（重複防止）
+  const newRestartBtn = elements.restartBtn.cloneNode(true);
+  elements.restartBtn.parentNode.replaceChild(newRestartBtn, elements.restartBtn);
+  elements.restartBtn = newRestartBtn;
+  
+  // 再開ボタンのイベントリスナーを設定
+  elements.restartBtn.addEventListener('click', () => {
+    elements.clearScreen.style.display = 'none';
+    elements.coverImage.style.display = 'block';
+    elements.startScreen.style.display = 'flex';
+    resetGame();
+  });
+}
+
+function resetGame() {
+  // ゲーム状態をリセット
+  gameState.score = 0;
+  gameState.timeLeft = GAME_TIME;
+  elements.scoreSpan.textContent = gameState.score;
+  elements.timerSpan.textContent = gameState.timeLeft;
+  
+  // 噴出しワードをすべて削除
+  elements.eruptionArea.innerHTML = '';
+  elements.eruptionArea.style.display = 'none';
 }
 
 // 初期表示
