@@ -125,22 +125,22 @@ function startEruption() {
 // ゲーム開始
 function startGame() {
   // ゲーム状態をリセット
-  gameState.score = 0;
-  gameState.timeLeft = GAME_TIME;
+  resetGame();
+  
+  // ゲーム状態をアクティブに
   gameState.gameActive = true;
+  
+  // UIを更新
   elements.scoreSpan.textContent = gameState.score;
   elements.timerSpan.textContent = gameState.timeLeft;
-  elements.eruptionArea.innerHTML = '';
   
-  // スタート画面を非表示に
+  // 画面表示を切り替え
   elements.startScreen.style.display = 'none';
   elements.clearScreen.style.display = 'none';
-  
-  // ゲーム画面表示
-  elements.gobouImg.style.display = "block";
-  elements.eruptionArea.style.display = "block";
-  elements.coverImage.style.display = "none";
-  elements.gameScreen.style.display = "block";
+  elements.coverImage.style.display = 'none';
+  elements.gameScreen.style.display = 'block';
+  elements.gobouImg.style.display = 'block';
+  elements.eruptionArea.style.display = 'block';
   
   // ゲーム開始
   startTimer();
@@ -189,28 +189,55 @@ function showClearScreen() {
 
 function resetGame() {
   // ゲーム状態をリセット
-  gameState.score = 0;
-  gameState.timeLeft = GAME_TIME;
-  elements.scoreSpan.textContent = gameState.score;
-  elements.timerSpan.textContent = gameState.timeLeft;
+  gameState = {
+    score: 0,
+    timeLeft: GAME_TIME,
+    gameActive: false,
+    gameInterval: null,
+    eruptionInterval: null
+  };
   
-  // 噴出しワードをすべて削除
-  elements.eruptionArea.innerHTML = '';
-  elements.eruptionArea.style.display = 'none';
+  // UIをリセット
+  if (elements.scoreSpan) elements.scoreSpan.textContent = gameState.score;
+  if (elements.timerSpan) elements.timerSpan.textContent = gameState.timeLeft;
+  if (elements.eruptionArea) {
+    elements.eruptionArea.innerHTML = '';
+    elements.eruptionArea.style.display = 'none';
+  }
+  
+  // メッセージをクリア
+  if (elements.messageDiv) {
+    elements.messageDiv.textContent = '';
+    elements.messageDiv.style.display = 'none';
+    elements.messageDiv.className = '';
+  }
+  
+  // すべてのインターバルをクリア
+  clearInterval(gameState.gameInterval);
+  clearInterval(gameState.eruptionInterval);
 }
 
 // 初期表示
 window.addEventListener("DOMContentLoaded", () => {
+  // ゲーム状態の初期化
+  resetGame();
+  
+  // 初期表示の設定
   elements.gobouImg.style.display = "none";
   elements.eruptionArea.style.display = "none";
   elements.coverImage.style.display = "flex";
   elements.startScreen.style.display = "flex";
+  elements.gameScreen.style.display = "none";
+  elements.clearScreen.style.display = "none";
   
   // スタートボタンイベント（DOM読み込み後に設定）
-  document.getElementById("start-btn").addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    startGame();
-  });
+  const startBtn = document.getElementById("start-btn");
+  if (startBtn) {
+    startBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      startGame();
+    });
+  }
 });
 
