@@ -15,13 +15,15 @@ body {
   position: fixed;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: none; /* 初期は非表示 */
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  z-index: 50;
+  background: #f8f5ef;
+  z-index: 100;
+  overflow: hidden;
 }
 .game-ui {
   position: fixed;

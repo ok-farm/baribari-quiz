@@ -7,11 +7,12 @@ const GAME_TIME = 20;
 // スコアメッセージの更新
 function updateScoreMessage(score) {
   const remaining = WIN_SCORE - score;
-  const remainingSpan = document.getElementById('remaining');
-  if (remaining > 0) {
-    remainingSpan.textContent = `${remaining}集めろ⚡️`;
+  const scoreElement = document.querySelector('.score');
+  
+  if (score >= WIN_SCORE) {
+    scoreElement.textContent = 'やったね⚡️';
   } else {
-    remainingSpan.textContent = 'やったね⚡️';
+    scoreElement.textContent = `バリバリを${remaining}つ集めろ⚡️`;
   }
 }
 
@@ -142,6 +143,8 @@ function startEruption() {
 
 // ゲーム開始
 function startGame() {
+  console.log('startGame called'); // デバッグ用
+  
   // ゲーム状態をリセット
   resetGame();
   
@@ -149,23 +152,35 @@ function startGame() {
   gameState.gameActive = true;
   
   // スコアメッセージを初期化
-  updateScoreMessage(0);
+  const scoreElement = document.querySelector('.score');
+  if (scoreElement) {
+    scoreElement.textContent = `バリバリを${WIN_SCORE}つ集めろ⚡️`;
+  }
   
   // UIを更新
-  elements.scoreSpan.textContent = gameState.score;
-  elements.timerSpan.textContent = gameState.timeLeft;
+  if (elements.scoreSpan) elements.scoreSpan.textContent = gameState.score;
+  if (elements.timerSpan) elements.timerSpan.textContent = gameState.timeLeft;
   
   // 画面表示を切り替え
-  elements.startScreen.style.display = 'none';
-  elements.clearScreen.style.display = 'none';
-  elements.coverImage.style.display = 'none';
-  elements.gameScreen.style.display = 'block';
-  elements.gobouImg.style.display = 'block';
-  elements.eruptionArea.style.display = 'block';
+  console.log('Switching screens...'); // デバッグ用
+  if (elements.startScreen) elements.startScreen.style.display = 'none';
+  if (elements.clearScreen) elements.clearScreen.style.display = 'none';
+  if (elements.coverImage) elements.coverImage.style.display = 'none';
+  
+  // ゲーム画面を表示
+  if (elements.gameScreen) {
+    console.log('Showing game screen'); // デバッグ用
+    elements.gameScreen.style.display = 'flex';
+  }
+  
+  if (elements.gobouImg) elements.gobouImg.style.display = 'block';
+  if (elements.eruptionArea) elements.eruptionArea.style.display = 'block';
   
   // ゲーム開始
   startTimer();
   startEruption();
+  
+  console.log('Game started'); // デバッグ用
 }
 
 // ゲーム終了
@@ -240,28 +255,55 @@ function resetGame() {
 
 // 初期表示
 window.addEventListener("DOMContentLoaded", () => {
+  console.log('DOM fully loaded'); // デバッグ用
+  
   // 要素の参照を確実に取得
-  elements.eruptionArea = document.getElementById("eruption-area");
-  elements.gobouImg = document.getElementById("gobou-img");
-  elements.scoreSpan = document.getElementById("score");
-  elements.timerSpan = document.getElementById("timer");
-  elements.messageDiv = document.getElementById("message");
-  elements.startScreen = document.getElementById("start-screen");
-  elements.gameScreen = document.getElementById("game-screen");
-  elements.clearScreen = document.getElementById("clear-screen");
-  elements.coverImage = document.getElementById("cover-image");
-  elements.restartBtn = document.getElementById("restart-btn");
+  const getElement = (id) => {
+    const el = document.getElementById(id);
+    if (!el) console.error(`Element with id '${id}' not found`);
+    return el;
+  };
+  
+  // 要素の参照を更新
+  elements.eruptionArea = getElement("eruption-area");
+  elements.gobouImg = getElement("gobou-img");
+  elements.scoreSpan = getElement("score");
+  elements.timerSpan = getElement("timer");
+  elements.messageDiv = getElement("message");
+  elements.startScreen = getElement("start-screen");
+  elements.gameScreen = getElement("game-screen");
+  elements.clearScreen = getElement("clear-screen");
+  elements.coverImage = getElement("cover-image");
+  elements.restartBtn = getElement("restart-btn");
+  
+  // 初期表示を設定
+  console.log('Initializing display...'); // デバッグ用
+  if (elements.gobouImg) elements.gobouImg.style.display = "none";
+  if (elements.eruptionArea) elements.eruptionArea.style.display = "none";
+  
+  // 画面の初期状態を設定
+  if (elements.coverImage) {
+    elements.coverImage.style.display = "flex";
+    console.log('Cover image displayed');
+  }
+  
+  if (elements.startScreen) {
+    elements.startScreen.style.display = "flex";
+    console.log('Start screen displayed');
+  }
+  
+  if (elements.gameScreen) {
+    elements.gameScreen.style.display = "none";
+    console.log('Game screen hidden');
+  }
+  
+  if (elements.clearScreen) {
+    elements.clearScreen.style.display = "none";
+    console.log('Clear screen hidden');
+  }
   
   // ゲーム状態の初期化
   resetGame();
-  
-  // 初期表示を設定
-  if (elements.gobouImg) elements.gobouImg.style.display = "none";
-  if (elements.eruptionArea) elements.eruptionArea.style.display = "none";
-  if (elements.coverImage) elements.coverImage.style.display = "flex";
-  if (elements.startScreen) elements.startScreen.style.display = "flex";
-  if (elements.gameScreen) elements.gameScreen.style.display = "none";
-  if (elements.clearScreen) elements.clearScreen.style.display = "none";
   
   // スタートボタンイベント
   const startBtn = document.getElementById("start-btn");
