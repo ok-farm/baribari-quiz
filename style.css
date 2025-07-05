@@ -1,0 +1,202 @@
+body {
+  background: #f8f5ef;
+  font-family: 'Segoe UI', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.game-ui {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.score {
+  font-size: 1.6em;
+  color: #7c5c2b;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 5px 15px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.timer {
+  font-size: 1.6em;
+  color: #7c5c2b;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 5px 15px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+#message {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8em;
+  color: #e67e22;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px 25px;
+  border-radius: 30px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  text-align: center;
+  min-width: 200px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#message.show {
+  opacity: 1;
+}
+#cover-image {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fffbe9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  position: relative;
+}
+#start-screen.screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+#cover-gobou {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  display: block;
+  max-width: 100vw;
+  max-height: 100vh;
+  opacity: 0.5;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+#gobou-img {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 40vw;
+  height: auto;
+  max-height: 40vh;
+  object-fit: contain;
+  z-index: 10;
+  user-select: none;
+  pointer-events: none;
+  background: #fffbe9;
+  box-shadow: 0 -2px 20px #e7c87a33;
+}
+@media (max-width: 600px) {
+  #gobou-img {
+    width: 95vw;
+    height: 18vw;
+    min-height: 60px;
+    max-width: 99vw;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+  }
+  #cover-gobou {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+}
+#eruption-area {
+  position: fixed;
+  left: 0;
+  bottom: 120px;
+  width: 100vw;
+  height: 70vh;
+  pointer-events: none;
+  z-index: 20;
+}
+.eruption-word {
+  position: fixed;
+  font-size: 2.2em;
+  font-weight: bold;
+  color: #b86b1b;
+  text-shadow: 2px 2px 8px #fff6e0, 0 0 8px #d8b36a;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+  opacity: 0;
+  animation: eruption 6s linear forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes eruption {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.9);
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+      var(--end-x, 0),
+      var(--end-y, -80vh)
+    ) scale(1);
+  }
+}
+#start-screen.screen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255,255,245,0.96);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+#start-btn {
+  font-size: 1.5em;
+  padding: 0.6em 2em;
+  background: #f7d27a;
+  border: none;
+  border-radius: 12px;
+  color: #7c5c2b;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #e7c87a66;
+  cursor: pointer;
+  margin-top: 1em;
+  transition: background 0.2s;
+}
+#start-btn:hover {
+  background: #ffe7a7;
+}

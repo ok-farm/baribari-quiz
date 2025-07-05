@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>バリバリごぼうゲーム</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-ui">
+    <div class="score">
+      スコア: <span id="score">0</span> / 3
+    </div>
+    <div class="timer">
+      残り時間: <span id="timer">10</span>秒
+    </div>
+    <div id="message"></div>
+  </div>
+  
+  <div id="cover-image">
+    <img src="baribari-photo.jpg" alt="バリバリごぼう" id="cover-gobou">
+    <div id="start-screen" class="screen">
+      <h1>バリバリごぼうゲーム</h1>
+      <button id="start-btn">スタート</button>
+    </div>
+  </div>
+  
+  <div id="eruption-area" style="display:none;"></div>
+  <img id="gobou-img" src="baribari-photo.jpg" alt="バリバリごぼう" style="display:none;">
+  
+  <script src="game.js"></script>
+</body>
+</html>
