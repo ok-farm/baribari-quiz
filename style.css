@@ -276,7 +276,7 @@ body.game-active {
 
 #start-screen.screen h1 {
   color: #7c5c2b;
-  font-size: 1.8em;
+  font-size: 1.4em;
   text-align: center;
   margin: 0 15px 10px 15px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
@@ -327,7 +327,7 @@ body.game-active {
   }
 
   .start-screen-gobou-img {
-    width: 80%;
+    width: 75%;
     margin: 15px auto;
   }
 
