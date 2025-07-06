@@ -17,7 +17,7 @@ const audioFiles = {
 // 各音声を初期化してボリュームを設定
 Object.keys(audioFiles).forEach(key => {
   sounds[key] = new Audio(audioFiles[key]);
-  sounds[key].volume = 0.4; // 40% volume
+  sounds[key].volume = 0.07; // 7% volume
 });
 
 // スコアメッセージの更新
@@ -106,7 +106,7 @@ function checkWord(wordElement, word) {
   // 対応する音声を再生
   if (sounds[word]) {
     const sound = sounds[word];
-    sound.volume = 0.4; // 念のため再生時にもボリュームを設定
+    sound.volume = 0.05; // 念のため再生時にもボリュームを設定
     sound.currentTime = 0;
     sound.play().catch(e => console.log("音声再生エラー:", e));
   }

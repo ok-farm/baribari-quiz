@@ -70,9 +70,9 @@ body.game-active {
 
 @media (max-width: 768px) {
   .score, .timer {
-    font-size: 1.5em;
-    padding: 6px 12px;
-    margin: 6px;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    margin: 5px;
   }
   
   .clear-container h1 {
@@ -154,13 +154,11 @@ body.game-active {
   z-index: 2;
 }
 #cover-gobou {
-  width: 100vw;
-  height: 100vh;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  max-width: 100vw;
-  max-height: 100vh;
-  opacity: 0.5;
+  opacity: 0.4;
   position: absolute;
   left: 0;
   top: 0;
@@ -187,13 +185,14 @@ body.game-active {
 }
 @media (max-width: 600px) {
   #gobou-img {
-    width: 95vw;
-    height: 18vw;
-    min-height: 60px;
-    max-width: 99vw;
+    width: 90vw;
+    height: 15vw;
+    min-height: 50px;
+    max-width: 95vw;
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);
+    padding: 5px 5px 0;
   }
   #cover-gobou {
     width: 100vw;
@@ -277,9 +276,9 @@ body.game-active {
 
 #start-screen.screen h1 {
   color: #7c5c2b;
-  font-size: 2.2em;
+  font-size: 1.8em;
   text-align: center;
-  margin: 0 0 15px 0;
+  margin: 0 15px 10px 15px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -305,14 +304,12 @@ body.game-active {
 
 /* スタート画面のバリバリごぼう画像 */
 .start-screen-gobou-img {
-  max-width: 250px;
   width: 70%;
+  max-width: 250px;
   height: auto;
-  display: block;
-  margin: 0 auto;
-  opacity: 0.8;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  margin: 0 auto 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* モバイル対応 */
@@ -330,7 +327,6 @@ body.game-active {
   }
 
   .start-screen-gobou-img {
-    max-width: 250px;
     width: 85%;
     margin: 15px auto;
   }
@@ -372,18 +368,20 @@ body.game-active {
 }
 
 #start-btn {
-  font-size: 1.4em;
-  padding: 12px 40px;
+  margin-top: 15px;
+  font-size: 1em;
+  padding: 10px 25px;
   background: #f7d27a;
-  border: none;
-  border-radius: 30px;
   color: #7c5c2b;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50px;
   cursor: pointer;
-  margin: 10px 0;
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 #d4b05a;
+  transition: all 0.2s;
+  font-weight: bold;
+  z-index: 10;
 }
+
 #start-btn:hover, #restart-btn:hover {
   background: #ffe7a7;
   transform: translateY(-2px);
@@ -392,7 +390,6 @@ body.game-active {
 
 #start-btn:active, #restart-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* クリア画面 */
