@@ -4,6 +4,22 @@ const CORRECT_WORD = "バリバリ";
 const WIN_SCORE = 3;
 const GAME_TIME = 20;
 
+// 音声オブジェクトの作成と設定
+const sounds = {};
+
+// 音声ファイルの初期化
+const audioFiles = {
+  "バリバリ": 'baribari-voice.mp3',
+  "パリパリ": 'paripari-voice.mp3',
+  "ハリハリ": 'harihari-voice.mp3'
+};
+
+// 各音声を初期化してボリュームを設定
+Object.keys(audioFiles).forEach(key => {
+  sounds[key] = new Audio(audioFiles[key]);
+  sounds[key].volume = 0.4; // 40% volume
+});
+
 // スコアメッセージの更新
 function updateScoreMessage(score) {
   const remaining = WIN_SCORE - score;
@@ -87,6 +103,14 @@ function createEruptionWord() {
 }
 
 function checkWord(wordElement, word) {
+  // 対応する音声を再生
+  if (sounds[word]) {
+    const sound = sounds[word];
+    sound.volume = 0.4; // 念のため再生時にもボリュームを設定
+    sound.currentTime = 0;
+    sound.play().catch(e => console.log("音声再生エラー:", e));
+  }
+
   if (word === CORRECT_WORD) {
     // 正解の場合
     gameState.score++;
