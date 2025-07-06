@@ -469,6 +469,15 @@ body.game-active {
   font-family: monospace;
 }
 
+.screenshot-reminder {
+  color: #e67e22;
+  font-size: 0.9em;
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+}
+
 .amazon-link {
   margin: 30px 0;
 }
@@ -498,6 +507,39 @@ body.game-active {
 }
 
 .amazon-button:active {
+  transform: translateY(0);
+}
+
+/* SNSリンク */
+.sns-link {
+  margin: 20px 0 30px;
+}
+
+.sns-link p {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.sns-button {
+  display: inline-block;
+  background: #3b5998; /* Facebookの青をベースに */
+  color: white !important;
+  text-decoration: none;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1.1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(59, 89, 152, 0.3);
+}
+
+.sns-button:hover {
+  background: #2d4373;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(59, 89, 152, 0.4);
+}
+
+.sns-button:active {
   transform: translateY(0);
 }
 
