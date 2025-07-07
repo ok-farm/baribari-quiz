@@ -450,7 +450,11 @@ function endGame(win) {
   document.body.classList.remove('game-active');
   
   // 結果メッセージ
-  showMessage(win ? "クリア！バリバリ達人！" : "時間切れ！また挑戦してね");
+  if (win) {
+    showMessage("🎉GAME CLEAR🎉");
+  } else {
+    showMessage("時間切れ！また挑戦してね");
+  }
   
   // 2秒後にクリア画面またはゲームオーバー画面を表示
   setTimeout(() => {
