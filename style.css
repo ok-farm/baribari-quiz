@@ -1,13 +1,19 @@
-body {
-  background: #f8f5ef;
-  font-family: 'Segoe UI', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: #f8f5ef;
+  font-family: 'Segoe UI', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
   position: relative;
   touch-action: manipulation;
-  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  overflow-y: auto;
 }
 
 /* ゲーム中のみスクロールを無効化 */
@@ -128,20 +134,17 @@ body.game-active {
   opacity: 1;
 }
 #cover-image {
-  position: relative;
   width: 100%;
-  min-height: 100vh;
-  background: #fffbe9;
+  min-height: 100%;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   z-index: 300;
-  padding: 20px 0 40px;
+  padding: 20px 0 80px;
   box-sizing: border-box;
 }
 #start-screen.screen {
-  position: relative;
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
@@ -149,25 +152,11 @@ body.game-active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   z-index: 2;
   padding: 20px;
   box-sizing: border-box;
-  flex: 1;
 }
-#cover-gobou {
-  width: 100vw;
-  height: 100vh;
-  object-fit: contain;
-  display: block;
-  max-width: 100vw;
-  max-height: 100vh;
-  opacity: 0.5;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
-}
+
 #gobou-img {
   position: fixed;
   left: 50%;
@@ -387,8 +376,10 @@ body.game-active {
   font-weight: bold;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  margin: 10px 0;
+  margin: 20px 0 40px;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
 }
 #start-btn:hover, #restart-btn:hover {
   background: #ffe7a7;
