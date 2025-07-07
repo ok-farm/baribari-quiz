@@ -4,21 +4,229 @@ const CORRECT_WORD = "バリバリ";
 const WIN_SCORE = 3;
 const GAME_TIME = 20;
 
-// 音声オブジェクトの作成と設定
-const sounds = {};
+// Web Audio APIのセットアップ
+let audioContext = null;
+let gainNode = null;
+const audioBuffers = new Map();
 
-// 音声ファイルの初期化
+// 音声ファイルのパス
 const audioFiles = {
   "バリバリ": 'baribari-voice.mp3',
   "パリパリ": 'paripari-voice.mp3',
   "ハリハリ": 'harihari-voice.mp3'
 };
 
-// 各音声を初期化してボリュームを設定
-Object.keys(audioFiles).forEach(key => {
-  sounds[key] = new Audio(audioFiles[key]);
-  sounds[key].volume = 0.07; // 7% volume
+// ページ読み込み時に実行
+document.addEventListener('DOMContentLoaded', () => {
+  // ユーザーが最初にページを操作したときに音声を初期化
+  const initOnFirstInteraction = () => {
+    // 既に初期化済みの場合は何もしない
+    if (window.audioInitialized) return;
+    window.audioInitialized = true;
+    
+    console.log('First user interaction detected');
+    
+    // モバイル向けにタッチイベントを無効化（スクロールを防ぐ）
+    document.body.style.touchAction = 'manipulation';
+    
+    // 音声コンテキストを初期化
+    initAudioContext();
+    
+    // タッチイベントをキャンセル
+    return false;
+  };
+  
+  // モバイル対応: タッチスタートとタッチエンドで初期化を試みる
+  const touchEvents = ['touchstart', 'touchend', 'click'];
+  touchEvents.forEach(event => {
+    document.addEventListener(event, initOnFirstInteraction, {
+      capture: true,
+      passive: false,
+      once: true
+    });
+  });
+  
+  // スタートボタンでも初期化を試みる
+  if (elements.startBtn) {
+    elements.startBtn.addEventListener('touchstart', initOnFirstInteraction, { once: true });
+  }
 });
+
+// オーディオコンテキストを初期化
+function initAudioContext() {
+  if (audioContext) return;
+  
+  try {
+    // オーディオコンテキストを作成
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioContext = new AudioContext();
+    
+    // ゲインノードを作成して接続
+    gainNode = audioContext.createGain();
+    gainNode.gain.value = 0.07; // 7% volume
+    gainNode.connect(audioContext.destination);
+    
+    console.log('AudioContext initialized');
+    
+    // 音声ファイルをプリロード
+    preloadAudioFiles();
+  } catch (error) {
+    console.error('Failed to initialize audio:', error);
+  }
+}
+
+// 音声ファイルをプリロード
+async function preloadAudioFiles() {
+  if (!audioContext) {
+    console.warn('Cannot preload audio: AudioContext not initialized');
+    return Promise.resolve();
+  }
+  
+  console.log('Starting to preload audio files...');
+  
+  try {
+    // すべての音声ファイルを並列に読み込む
+    await Promise.all(
+      Object.entries(audioFiles).map(async ([key, url]) => {
+        try {
+          // 既にロード済みの場合はスキップ
+          if (audioBuffers.has(key)) {
+            console.log(`Already loaded: ${key}`);
+            return;
+          }
+          
+          console.log(`Loading: ${url}`);
+          
+          // 音声ファイルをフェッチ
+          const response = await fetch(url, { cache: 'no-cache' });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status} loading ${url}`);
+          }
+          
+          // バイナリデータを取得してデコード
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+          
+          // メモリに保存
+          audioBuffers.set(key, audioBuffer);
+          console.log(`✅ Successfully loaded: ${key}`);
+          
+          return audioBuffer;
+        } catch (error) {
+          console.error(`❌ Error loading ${url}:`, error);
+          throw error; // エラーを再スローして呼び出し元で処理できるようにする
+        }
+      })
+    );
+    
+    console.log('✅ All audio files loaded successfully');
+    return Promise.resolve();
+  } catch (error) {
+    console.error('❌ Error in preloadAudioFiles:', error);
+    return Promise.reject(error);
+  }
+}
+
+// 音声を再生する関数
+function playSound(key, attempt = 1) {
+  // 最大リトライ回数を超えたら諦める
+  const MAX_ATTEMPTS = 3;
+  if (attempt > MAX_ATTEMPTS) {
+    console.warn(`Max play attempts (${MAX_ATTEMPTS}) reached for sound: ${key}`);
+    return;
+  }
+  
+  // オーディオコンテキストが一時停止状態の場合は再開を試みる
+  if (audioContext && audioContext.state === 'suspended') {
+    console.log('AudioContext is suspended, attempting to resume...');
+    audioContext.resume()
+      .then(() => {
+        console.log('AudioContext resumed successfully, retrying playback...');
+        playSound(key, attempt + 1);
+      })
+      .catch(error => {
+        console.error('Failed to resume AudioContext:', error);
+        // リトライ
+        if (attempt < MAX_ATTEMPTS) {
+          console.log(`Retrying playback (${attempt + 1}/${MAX_ATTEMPTS})...`);
+          setTimeout(() => playSound(key, attempt + 1), 300 * attempt);
+        }
+      });
+    return;
+  }
+  
+  // オーディオコンテキストが初期化されていない場合は初期化を試みる
+  if (!audioContext) {
+    console.warn('AudioContext not initialized, trying to initialize...');
+    initAudioContext();
+    
+    // 少し待ってから再試行
+    setTimeout(() => playSound(key, attempt + 1), 300);
+    return;
+  }
+  
+  // オーディオバッファが読み込まれていない場合はスキップ
+  const buffer = audioBuffers.get(key);
+  if (!buffer) {
+    console.warn(`Audio buffer not loaded: ${key}`);
+    
+    // ファイルの再読み込みを試みる
+    if (attempt === 1) {
+      console.log('Attempting to reload audio files...');
+      preloadAudioFiles().then(() => {
+        setTimeout(() => playSound(key, attempt + 1), 300);
+      });
+    }
+    return;
+  }
+  
+  try {
+    // 新しい音源ノードを作成
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    
+    // ゲインノードに接続
+    source.connect(gainNode);
+    
+    // 再生終了時のクリーンアップ
+    source.onended = () => {
+      console.log(`Playback finished: ${key}`);
+      try {
+        source.disconnect();
+      } catch (e) {
+        console.warn('Error during source cleanup:', e);
+      }
+    };
+    
+    // エラーハンドリング
+    source.onerror = (error) => {
+      console.error('Error during playback:', error);
+      try {
+        source.disconnect();
+      } catch (e) {
+        console.warn('Error during error handling:', e);
+      }
+      
+      // リトライ
+      if (attempt < MAX_ATTEMPTS) {
+        console.log(`Retrying playback after error (${attempt + 1}/${MAX_ATTEMPTS})...`);
+        setTimeout(() => playSound(key, attempt + 1), 300 * attempt);
+      }
+    };
+    
+    // 再生を開始
+    console.log(`Starting playback: ${key}`);
+    source.start(0);
+  } catch (error) {
+    console.error(`Error playing sound ${key}:`, error);
+    
+    // リトライ
+    if (attempt < MAX_ATTEMPTS) {
+      console.log(`Retrying after error (${attempt + 1}/${MAX_ATTEMPTS})...`);
+      setTimeout(() => playSound(key, attempt + 1), 300 * attempt);
+    }
+  }
+}
 
 // スコアメッセージの更新
 function updateScoreMessage(score) {
@@ -34,17 +242,33 @@ function updateScoreMessage(score) {
 
 // DOM要素
 const elements = {
-  eruptionArea: document.getElementById("eruption-area"),
-  gobouImg: document.getElementById("gobou-img"),
-  scoreSpan: document.getElementById("score"),
-  timerSpan: document.getElementById("timer"),
-  messageDiv: document.getElementById("message"),
-  startScreen: document.getElementById("start-screen"),
-  gameScreen: document.getElementById("game-screen"),
-  clearScreen: document.getElementById("clear-screen"),
-  coverImage: document.getElementById("cover-image"),
-  restartBtn: document.getElementById("restart-btn")
+  // 初期化時に全てnullにしておく
+  eruptionArea: null,
+  gobouImg: null,
+  timerSpan: null,
+  scoreSpan: null,
+  messageDiv: null,
+  startScreen: null,
+  gameScreen: null,
+  resultScreen: null,
+  finalScore: null,
+  finalMessage: null,
+  startBtn: null,
+  retryBtn: null,
+  homeBtn: null,
+  clearScreen: null,
+  clearFinalScore: null,
+  clearHomeBtn: null
 };
+
+// 要素の参照を確実に取得する関数
+function getElement(id) {
+  const element = document.getElementById(id);
+  if (!element) {
+    console.error(`Element with id '${id}' not found`);
+  }
+  return element;
+}
 
 // ゲーム状態
 let gameState = {
@@ -104,12 +328,7 @@ function createEruptionWord() {
 
 function checkWord(wordElement, word) {
   // 対応する音声を再生
-  if (sounds[word]) {
-    const sound = sounds[word];
-    sound.volume = 0.05; // 念のため再生時にもボリュームを設定
-    sound.currentTime = 0;
-    sound.play().catch(e => console.log("音声再生エラー:", e));
-  }
+  playSound(word);
 
   if (word === CORRECT_WORD) {
     // 正解の場合
@@ -341,6 +560,26 @@ window.addEventListener("DOMContentLoaded", () => {
   elements.eruptionArea = getElement("eruption-area");
   elements.gobouImg = getElement("gobou-img");
   elements.timerSpan = getElement("timer");
+  elements.scoreSpan = getElement("score");
+  elements.messageDiv = getElement("message");
+  elements.startScreen = getElement("start-screen");
+  elements.gameScreen = getElement("game-screen");
+  elements.resultScreen = getElement("result-screen");
+  elements.finalScore = getElement("final-score");
+  elements.finalMessage = getElement("final-message");
+  elements.startBtn = getElement("start-btn");
+  elements.retryBtn = getElement("retry-btn");
+  elements.homeBtn = getElement("home-btn");
+  elements.clearScreen = getElement("clear-screen");
+  elements.clearFinalScore = getElement("clear-final-score");
+  elements.clearHomeBtn = getElement("clear-home-btn");
+  
+  // 必要な要素がすべて存在するか確認
+  Object.entries(elements).forEach(([key, element]) => {
+    if (!element) {
+      console.warn(`Element '${key}' is missing in the HTML`);
+    }
+  });
   elements.messageDiv = getElement("message");
   elements.startScreen = getElement("start-screen");
   elements.clearScreen = getElement("clear-screen");
@@ -374,13 +613,22 @@ window.addEventListener("DOMContentLoaded", () => {
   resetGame();
   
   // スタートボタンイベント
-  const startBtn = document.getElementById("start-btn");
-  if (startBtn) {
-    startBtn.addEventListener("click", (e) => {
+  if (elements.startBtn) {
+    elements.startBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
+      
+      // ゲームを開始
       startGame();
+      
+      // テスト用に少し遅れて音を鳴らす
+      setTimeout(() => {
+        console.log('Playing test sound...');
+        playSound('バリバリ');
+      }, 500);
     });
+  } else {
+    console.error('Start button not found');
   }
   
   // リスタートボタンイベント
