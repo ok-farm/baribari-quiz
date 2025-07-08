@@ -329,10 +329,9 @@ body.game-active {
   width: 70%;
   height: auto;
   display: block;
-  margin: 0;
+  margin: 0 auto 5px; /* 下マージンを5pxに変更 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  margin-bottom: 15px;
 }
 
 /* モバイル対応 */
@@ -352,13 +351,14 @@ body.game-active {
   .start-screen-gobou-img {
     max-width: 250px;
     width: 85%;
-    margin: 15px auto;
+    margin: 15px auto 5px; /* 下マージンを5pxに変更 */
   }
 
   #start-btn {
-    margin-top: 10px;
+    margin: 0 auto; /* 中央揃え */
     padding: 12px 25px;
     font-size: 1.2em;
+    display: block; /* ブロック要素に変更 */
   }
 
   #start-screen.screen {
@@ -371,7 +371,7 @@ body.game-active {
 @media (min-width: 769px) {
   .start-screen-gobou-img {
     max-width: 400px;
-    margin: 30px auto;
+    margin: 30px auto 5px; /* 下マージンを5pxに変更 */
   }
 
   .game-rules {
@@ -401,12 +401,13 @@ body.game-active {
   font-weight: bold;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  margin: 0;
+  margin: 0 auto; /* 中央揃え */
   transition: all 0.2s ease;
   position: relative;
   z-index: 10;
   width: auto;
   min-width: 180px;
+  display: block; /* ブロック要素に変更 */
 }
 #start-btn:hover, #restart-btn:hover {
   background: #ffe7a7;
