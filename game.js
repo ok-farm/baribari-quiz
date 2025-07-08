@@ -7,13 +7,15 @@ const GAME_TIME = 20;
 // Web Audio APIのセットアップ
 let audioContext = null;
 let gainNode = null;
+let clearGainNode = null;
 const audioBuffers = new Map();
 
 // 音声ファイルのパス
 const audioFiles = {
   "バリバリ": 'baribari-voice.mp3',
   "パリパリ": 'paripari-voice.mp3',
-  "ハリハリ": 'harihari-voice.mp3'
+  "ハリハリ": 'harihari-voice.mp3',
+  "game-clear": 'game-clear-voice.mp3'
 };
 
 // ページ読み込み時に実行
@@ -65,6 +67,11 @@ function initAudioContext() {
     gainNode = audioContext.createGain();
     gainNode.gain.value = 0.07; // 7% volume
     gainNode.connect(audioContext.destination);
+
+    // ゲームクリア専用のゲインノードを作成して接続
+    clearGainNode = audioContext.createGain();
+    clearGainNode.gain.value = 0.4; // 40% volume for game clear sound
+    clearGainNode.connect(audioContext.destination);
     
     console.log('AudioContext initialized');
     
@@ -86,7 +93,7 @@ async function preloadAudioFiles() {
   
   try {
     // すべての音声ファイルを並列に読み込む
-    await Promise.all(
+    await Promise.allSettled(
       Object.entries(audioFiles).map(async ([key, url]) => {
         try {
           // 既にロード済みの場合はスキップ
@@ -111,10 +118,10 @@ async function preloadAudioFiles() {
           audioBuffers.set(key, audioBuffer);
           console.log(`✅ Successfully loaded: ${key}`);
           
-          return audioBuffer;
+          return { status: 'fulfilled', value: key };
         } catch (error) {
           console.error(`❌ Error loading ${url}:`, error);
-          throw error; // エラーを再スローして呼び出し元で処理できるようにする
+          return { status: 'rejected', reason: error };
         }
       })
     );
@@ -185,8 +192,9 @@ function playSound(key, attempt = 1) {
     const source = audioContext.createBufferSource();
     source.buffer = buffer;
     
-    // ゲインノードに接続
-    source.connect(gainNode);
+    // キーに応じてゲインノードを選択
+    const gain = key === 'game-clear' ? clearGainNode : gainNode;
+    source.connect(gain);
     
     // 再生終了時のクリーンアップ
     source.onended = () => {
@@ -451,6 +459,7 @@ function endGame(win) {
   
   // 結果メッセージ
   if (win) {
+    playSound("game-clear");
     showMessage("🎉GAME CLEAR🎉");
   } else {
     showMessage("時間切れ！また挑戦してね");
@@ -648,4 +657,3 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
