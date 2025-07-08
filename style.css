@@ -474,6 +474,52 @@ body.game-active {
   word-break: break-all;
 }
 
+.coupon-code-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.coupon-code {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #e74c3c;
+  letter-spacing: 2px;
+  text-align: center;
+  border: 2px dashed #e74c3c;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: #fff9f9;
+}
+
+.copy-button {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  color: #495057;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  transition: all 0.2s;
+}
+
+.copy-button:hover {
+  background-color: #e9ecef;
+}
+
+.copy-button:active {
+  background-color: #dee2e6;
+  transform: translateY(1px);
+}
+
+.copy-button.copied {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
 .coupon-code {
   font-size: 2em;
   font-weight: bold;

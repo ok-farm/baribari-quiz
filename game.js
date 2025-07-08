@@ -361,7 +361,9 @@ function checkWord(wordElement, word) {
 
 // メッセージ表示
 function showMessage(msg) {
-  elements.messageDiv.textContent = msg;
+  // 改行コードを<br>タグに変換
+  const formattedMsg = msg.replace(/\n/g, '<br>');
+  elements.messageDiv.innerHTML = formattedMsg;
   elements.messageDiv.classList.add('show');
   
   // 既存のタイマーをクリア
@@ -462,7 +464,7 @@ function endGame(win) {
     playSound("game-clear");
     showMessage("🎉GAME CLEAR🎉");
   } else {
-    showMessage("時間切れ！また挑戦してね");
+    showMessage("時間切れ！\nまた挑戦してね");
   }
   
   // 2秒後にクリア画面またはゲームオーバー画面を表示
@@ -556,6 +558,99 @@ function resetGame() {
   }
   
   console.log('Game reset complete');
+}
+
+// クーポンコードをクリップボードにコピーする関数
+function copyCouponCode() {
+  const couponCode = '20252025';
+  const copyButton = document.querySelector('.copy-button');
+  
+  // 一時的なテキストエリアを作成
+  const textarea = document.createElement('textarea');
+  textarea.value = couponCode;
+  textarea.style.position = 'fixed';  // 画面外に配置
+  textarea.style.opacity = 0;
+  document.body.appendChild(textarea);
+  
+  // テキストを選択
+  textarea.select();
+  
+  // コピーを試みる
+  try {
+    // 新しいクリップボードAPIを試す
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(couponCode).then(() => {
+        showCopySuccess(copyButton);
+      }).catch(() => {
+        // 新しいAPIが失敗した場合は古いAPIを試す
+        fallbackCopyText(couponCode, copyButton);
+      });
+    } else {
+      // 古いブラウザ用のフォールバック
+      fallbackCopyText(couponCode, copyButton);
+    }
+  } catch (err) {
+    console.error('クーポンコードのコピーに失敗しました:', err);
+    fallbackCopyText(couponCode, copyButton);
+  } finally {
+    // テキストエリアを削除
+    if (document.body.contains(textarea)) {
+      document.body.removeChild(textarea);
+    }
+  }
+}
+
+// 古いブラウザ用のフォールバックコピー関数
+function fallbackCopyText(text, button) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = 0;
+  document.body.appendChild(textarea);
+  
+  try {
+    // テキストを選択
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // モバイル用に範囲を設定
+    
+    // コピーを実行
+    const successful = document.execCommand('copy');
+    if (successful) {
+      showCopySuccess(button);
+    } else {
+      throw new Error('コピーに失敗しました');
+    }
+  } catch (err) {
+    console.error('フォールバックコピーに失敗しました:', err);
+    // 最終手段としてユーザーに手動コピーを促す
+    if (button) {
+      button.textContent = 'コピーに失敗しました';
+      setTimeout(() => {
+        button.textContent = 'クーポンコードをコピー';
+      }, 2000);
+    }
+    // ユーザーが手動でコピーできるようにテキストを表示
+    prompt('クーポンコードを手動でコピーしてください:', text);
+  } finally {
+    if (document.body.contains(textarea)) {
+      document.body.removeChild(textarea);
+    }
+  }
+}
+
+// コピー成功時のUI更新
+function showCopySuccess(button) {
+  if (!button) return;
+  
+  const originalText = button.textContent;
+  button.textContent = 'コピーしました！';
+  button.classList.add('copied');
+  
+  // 2秒後に元のテキストに戻す
+  setTimeout(() => {
+    button.textContent = originalText;
+    button.classList.remove('copied');
+  }, 2000);
 }
 
 // 初期表示
